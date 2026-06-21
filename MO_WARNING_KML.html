@@ -3,87 +3,509 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Export Met Office Warnings to KML</title>
+    <title>Met Office Warnings - Interactive Map & KML Export</title>
+    
+    <!-- Mapbox GL JS CSS -->
+    <link href="https://api.mapbox.com/mapbox-gl-js/v3.25.0/mapbox-gl.css" rel="stylesheet">
+    <!-- Mapbox GL JS -->
+    <script src="https://api.mapbox.com/mapbox-gl-js/v3.25.0/mapbox-gl.js"></script>
+
     <style>
-        body {
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            padding: 40px;
-            text-align: center;
-            background-color: #f4f4f9;
             color: #333;
         }
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            background: white;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        .app-container {
+            display: flex;
+            height: 100vh;
+            width: 100vw;
         }
-        button {
-            padding: 12px 24px;
-            font-size: 16px;
+        .sidebar {
+            width: 380px;
+            background: #fff;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid #ddd;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            z-index: 2;
+        }
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid #ddd;
+            background: #f8f9fa;
+        }
+        .sidebar-header h2 { margin: 0 0 5px 0; font-size: 1.2rem; }
+        .sidebar-header p { margin: 0 0 15px 0; font-size: 0.85rem; color: #666; }
+        
+        .controls { display: flex; gap: 10px; }
+        .btn {
+            padding: 10px 15px;
+            font-size: 14px;
             cursor: pointer;
-            background: #0078D7;
-            color: white;
             border: none;
             border-radius: 4px;
             transition: background 0.2s;
+            flex: 1;
         }
-        button:hover {
-            background: #005a9e;
+        .btn-primary { background: #0078D7; color: white; }
+        .btn-primary:hover { background: #005a9e; }
+        .btn-primary:disabled { background: #99c7ea; cursor: not-allowed; }
+        
+        .btn-secondary { background: #e0e0e0; color: #333; }
+        .btn-secondary:hover { background: #d0d0d0; }
+        
+        .list-controls {
+            padding: 10px 20px;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+            background: #f1f1f1;
+            font-size: 14px;
         }
-        button:disabled {
-            background: #ccc;
-            cursor: not-allowed;
+        .list-controls input { margin-right: 10px; cursor: pointer; }
+        
+        .sidebar-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0;
+            background: #fafafa;
         }
-        #status {
-            margin-top: 20px;
-            font-weight: 500;
-            color: #555;
+        
+        .warning-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 15px 20px;
+            border-bottom: 1px solid #eaeaea;
+            cursor: pointer;
+            transition: background 0.1s;
         }
+        .warning-item:hover { background: #f0f0f0; }
+        .warning-item input { margin-top: 3px; margin-right: 15px; cursor: pointer;}
+        .warning-details { flex: 1; }
+        .warning-details strong { display: block; font-size: 14px; margin-bottom: 4px; }
+        .warning-details span { display: block; font-size: 12px; color: #555; }
+        
+        /* Badges for Warning Levels */
+        .badge {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 10px;
+            font-weight: bold;
+            color: white;
+            margin-top: 4px;
+            text-transform: uppercase;
+        }
+        .badge-yellow { background-color: #d4a300; color: black; }
+        .badge-amber { background-color: #ff9800; }
+        .badge-red { background-color: #f44336; }
+
+        .sidebar-footer {
+            padding: 20px;
+            border-top: 1px solid #ddd;
+            background: #fff;
+        }
+
+        .map-container {
+            flex: 1;
+            position: relative;
+        }
+        #map {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+        }
+        
+        #status-msg {
+            font-size: 0.85rem;
+            margin-top: 5px;
+            color: #0078D7;
+        }
+
+        /* Custom styling for Mapbox Popup */
+        .mapboxgl-popup {
+            max-width: 450px !important;
+            font-family: inherit;
+        }
+        .mapboxgl-popup-content {
+            padding: 15px 20px !important;
+            border-radius: 8px !important;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2) !important;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .popup-title { margin: 0 0 5px 0; font-size: 1.1rem; font-weight: bold; }
+        .popup-meta { font-size: 0.8rem; color: #666; margin-bottom: 10px; }
+        .popup-section { margin-top: 12px; font-size: 0.85rem; line-height: 1.4; }
+        .popup-section h4 { margin: 0 0 4px 0; font-size: 0.9rem; color: #111; border-bottom: 1px solid #eee; padding-bottom: 2px; }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h2>Export Live Severe Weather Warnings</h2>
-        <p>Fetches the live Met Office data from the ArcGIS Feature Service and converts it to a downloadable KML file for use in Google Earth or QGIS.</p>
-        <button id="downloadBtn">Download KML</button>
-        <div id="status">Ready</div>
+    <div class="app-container">
+        <!-- SIDEBAR UI -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2>Met Office Warnings</h2>
+                <p>Live ArcGIS severe weather warnings mapped in real-time.</p>
+                <div class="controls">
+                    <button class="btn btn-secondary" id="refreshBtn">Refresh Data</button>
+                </div>
+                <div id="status-msg">Loading application...</div>
+            </div>
+
+            <div class="list-controls" style="display: none;" id="listControls">
+                <input type="checkbox" id="selectAllCb" checked>
+                <label for="selectAllCb"><strong>Select / Deselect All</strong></label>
+            </div>
+
+            <div class="sidebar-content" id="warningList">
+                <div style="padding: 20px; color: #888; text-align: center;">Fetching live dataset...</div>
+            </div>
+
+            <div class="sidebar-footer">
+                <button class="btn btn-primary" id="downloadBtn" style="width: 100%;" disabled>Export Selected KML</button>
+            </div>
+        </div>
+
+        <!-- MAPBOX CONTAINER -->
+        <div class="map-container">
+            <div id="map"></div>
+        </div>
     </div>
 
     <script>
-        /**
-         * Converts GeoJSON to a KML string
-         */
+        // ==========================================
+        // 1. MAPBOX INITIALIZATION
+        // ==========================================
+        // !! IMPORTANT: Replace with your actual Mapbox access token !!
+        mapboxgl.accessToken = 'pk.eyJ1IjoibWV0ZW9ncm91cC1tYXBib3giLCJhIjoiY2pudWJyMWVhMDQ0bjNxdXFsNWJ5M2ZtbSJ9.ANOKYyv5s0VFVbnesnGGUQ'; 
+
+        const map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/mapbox/light-v11', 
+            center: [-2.5, 54.0], 
+            zoom: 4.5
+        });
+
+        map.addControl(new mapboxgl.NavigationControl());
+        
+        let activePopup = null;
+        let globalGeojson = null;
+
+        const refreshBtn = document.getElementById('refreshBtn');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const warningList = document.getElementById('warningList');
+        const listControls = document.getElementById('listControls');
+        const selectAllCb = document.getElementById('selectAllCb');
+        const statusMsg = document.getElementById('status-msg');
+
+        // ==========================================
+        // 2. AUTO-LOAD WEATHER DATA ON MAP READY
+        // ==========================================
+        map.on('load', () => {
+            fetchLiveData();
+        });
+
+        refreshBtn.addEventListener('click', () => {
+            fetchLiveData();
+        });
+
+        // ==========================================
+        // 3. FETCHING DATA FROM ARCGIS
+        // ==========================================
+        async function fetchLiveData() {
+            refreshBtn.disabled = true;
+            refreshBtn.innerText = 'Refreshing...';
+            showStatus('Connecting to ArcGIS API...', '#0078D7');
+
+            try {
+                const url = 'https://services.arcgis.com/Lq3V5RFuTBC9I7kv/arcgis/rest/services/Met_Office_National_Severe_Weather_Warning_Service_Live/FeatureServer/0/query?where=1%3D1&outFields=*&outSR=4326&f=geojson';
+                const response = await fetch(url);
+                if (!response.ok) throw new Error('Network response was not ok');
+
+                globalGeojson = await response.json();
+
+                if (!globalGeojson.features || globalGeojson.features.length === 0) {
+                    showStatus('No active warnings found right now.', '#d32f2f');
+                    warningList.innerHTML = '<div style="padding: 20px; color: #888; text-align: center;">No active warnings found.</div>';
+                    refreshBtn.innerText = 'Refresh Data';
+                    refreshBtn.disabled = false;
+                    return;
+                }
+
+                // Inject a unique ID for cross-referencing UI clicks and filtering
+                globalGeojson.features.forEach((f, i) => {
+                    f.properties._local_id = i; 
+                });
+
+                showStatus(`Loaded ${globalGeojson.features.length} active warnings.`, '#2e7d32');
+                
+                addWarningsToMap();
+                buildSidebarList();
+                
+                downloadBtn.disabled = false;
+
+            } catch (error) {
+                console.error(error);
+                showStatus('Error fetching data. See console.', '#d32f2f');
+                warningList.innerHTML = '<div style="padding: 20px; color: #d32f2f; text-align: center;">Failed to load data.</div>';
+            } finally {
+                refreshBtn.innerText = 'Refresh Data';
+                refreshBtn.disabled = false;
+            }
+        }
+
+        function showStatus(text, color) {
+            statusMsg.style.color = color;
+            statusMsg.innerText = text;
+        }
+
+        // ==========================================
+        // 4. MAPBOX RENDERING & INTERACTION LOGIC
+        // ==========================================
+        function addWarningsToMap() {
+            if (activePopup) activePopup.remove();
+            if (map.getLayer('warnings-outline')) map.removeLayer('warnings-outline');
+            if (map.getLayer('warnings-fill')) map.removeLayer('warnings-fill');
+            if (map.getSource('warnings')) map.removeSource('warnings');
+
+            map.addSource('warnings', {
+                type: 'geojson',
+                data: globalGeojson
+            });
+
+            const colorExpression = [
+                'match',
+                ['upcase', ['get', 'warninglevel']],
+                'YELLOW', '#FFC107',
+                'AMBER', '#FF9800',
+                'RED', '#F44336',
+                '#0078D7'
+            ];
+
+            map.addLayer({
+                id: 'warnings-fill',
+                type: 'fill',
+                source: 'warnings',
+                paint: {
+                    'fill-color': colorExpression,
+                    'fill-opacity': 0.4
+                }
+            });
+
+            map.addLayer({
+                id: 'warnings-outline',
+                type: 'line',
+                source: 'warnings',
+                paint: {
+                    'line-color': colorExpression,
+                    'line-width': 2
+                }
+            });
+
+            // Map Click Event
+            map.on('click', 'warnings-fill', (e) => {
+                if (e.features.length > 0) {
+                    const featureProperties = e.features[0].properties;
+                    openFeaturePopup(featureProperties, e.lngLat);
+                }
+            });
+
+            map.on('mouseenter', 'warnings-fill', () => map.getCanvas().style.cursor = 'pointer');
+            map.on('mouseleave', 'warnings-fill', () => map.getCanvas().style.cursor = '');
+
+            // Bounds Adjustment
+            const bounds = new mapboxgl.LngLatBounds();
+            globalGeojson.features.forEach(feature => {
+                if (feature.geometry.type === 'Polygon') {
+                    feature.geometry.coordinates[0].forEach(coord => bounds.extend(coord));
+                } else if (feature.geometry.type === 'MultiPolygon') {
+                    feature.geometry.coordinates.forEach(poly => poly[0].forEach(coord => bounds.extend(coord)));
+                }
+            });
+            map.fitBounds(bounds, { padding: 40 });
+        }
+
+        function openFeaturePopup(props, lngLat) {
+            if (activePopup) activePopup.remove();
+
+            const title = props.weathertype || 'WEATHER WARNING';
+            const headline = props.warningheadline || '';
+            const level = props.warninglevel || 'UNKNOWN';
+            const validFrom = props.validFromDateString || '';
+            const validTo = props.validToDateString || '';
+            const impact = props.warningImpact || 'N/A';
+            const likelihood = props.warningLikelihood || 'N/A';
+            const whatToExpect = props.whatToExpect ? props.whatToExpect.replace(/\n/g, '<br>') : '';
+            const details = props.warningFurtherDetails ? props.warningFurtherDetails.replace(/\n/g, '<br>') : '';
+            const areas = props.affectedAreas ? props.affectedAreas.replace(/\n/g, '<br>') : '';
+
+            let badgeClass = 'badge-yellow';
+            if(level.toUpperCase() === 'AMBER') badgeClass = 'badge-amber';
+            if(level.toUpperCase() === 'RED') badgeClass = 'badge-red';
+
+            const popupHtml = `
+                <div class="popup-title">${title} <span class="badge ${badgeClass}">${level}</span></div>
+                <div class="popup-meta">
+                    <strong>Valid:</strong> ${validFrom} to ${validTo}<br>
+                    <strong>Impact:</strong> ${impact} | <strong>Likelihood:</strong> ${likelihood}
+                </div>
+                <div style="font-style: italic; font-size:0.9rem; margin-bottom:10px; color:#222;">"${headline}"</div>
+                
+                ${whatToExpect ? `<div class="popup-section"><h4>What to Expect</h4><p>${whatToExpect}</p></div>` : ''}
+                ${details ? `<div class="popup-section"><h4>Further Details</h4><p>${details}</p></div>` : ''}
+                ${areas ? `<div class="popup-section"><h4>Affected Areas</h4><p style="font-size:0.75rem; color:#555;">${areas}</p></div>` : ''}
+            `;
+
+            activePopup = new mapboxgl.Popup()
+                .setLngLat(lngLat)
+                .setHTML(popupHtml)
+                .addTo(map);
+        }
+
+        function getFeatureCenter(feature) {
+            const bounds = new mapboxgl.LngLatBounds();
+            if (feature.geometry.type === 'Polygon') {
+                feature.geometry.coordinates[0].forEach(coord => bounds.extend(coord));
+            } else if (feature.geometry.type === 'MultiPolygon') {
+                feature.geometry.coordinates.forEach(poly => poly[0].forEach(coord => bounds.extend(coord)));
+            }
+            return bounds.getCenter();
+        }
+
+        function updateMapFilter() {
+            if (!globalGeojson) return;
+
+            const checkedBoxes = document.querySelectorAll('.warning-cb:checked');
+            const selectedIds = Array.from(checkedBoxes).map(cb => parseInt(cb.value));
+
+            selectAllCb.checked = (selectedIds.length === globalGeojson.features.length);
+
+            const filterExpr = selectedIds.length > 0 
+                ? ['in', ['get', '_local_id'], ['literal', selectedIds]]
+                : ['==', ['get', '_local_id'], -1];
+
+            map.setFilter('warnings-fill', filterExpr);
+            map.setFilter('warnings-outline', filterExpr);
+
+            downloadBtn.disabled = selectedIds.length === 0;
+            downloadBtn.innerText = `Export KML (${selectedIds.length})`;
+        }
+
+        // ==========================================
+        // 5. SIDEBAR UI LOGIC
+        // ==========================================
+        function buildSidebarList() {
+            warningList.innerHTML = '';
+            listControls.style.display = 'flex';
+
+            globalGeojson.features.forEach(feature => {
+                const props = feature.properties;
+                const localId = props._local_id;
+                
+                const type = props.weathertype || 'Weather Warning';
+                const level = props.warninglevel || 'Yellow';
+                const fromDate = props.validFromDateString || '';
+
+                const div = document.createElement('div');
+                div.className = 'warning-item';
+
+                const cb = document.createElement('input');
+                cb.type = 'checkbox';
+                cb.className = 'warning-cb';
+                cb.value = localId;
+                cb.checked = true;
+                cb.addEventListener('change', (e) => {
+                    e.stopPropagation(); 
+                    updateMapFilter();
+                });
+
+                let badgeClass = 'badge-yellow';
+                if(level.toUpperCase() === 'AMBER') badgeClass = 'badge-amber';
+                if(level.toUpperCase() === 'RED') badgeClass = 'badge-red';
+
+                const details = document.createElement('div');
+                details.className = 'warning-details';
+                details.innerHTML = `
+                    <strong>${type} <span class="badge ${badgeClass}">${level}</span></strong>
+                    <span>Starts: ${fromDate}</span>
+                `;
+
+                div.appendChild(cb);
+                div.appendChild(details);
+
+                div.addEventListener('click', (e) => {
+                    if (e.target !== cb) {
+                        const center = getFeatureCenter(feature);
+                        map.flyTo({ center: center, zoom: 6.5 });
+                        openFeaturePopup(props, center);
+                    }
+                });
+
+                warningList.appendChild(div);
+            });
+
+            selectAllCb.checked = true;
+            updateMapFilter();
+        }
+
+        selectAllCb.addEventListener('change', (e) => {
+            const checkboxes = document.querySelectorAll('.warning-cb');
+            checkboxes.forEach(cb => cb.checked = e.target.checked);
+            updateMapFilter();
+        });
+
+        // ==========================================
+        // 6. KML EXPORT LOGIC
+        // ==========================================
+        downloadBtn.addEventListener('click', () => {
+            const checkedBoxes = document.querySelectorAll('.warning-cb:checked');
+            const selectedIds = Array.from(checkedBoxes).map(cb => parseInt(cb.value));
+
+            const exportFeatures = globalGeojson.features.filter(f => selectedIds.includes(f.properties._local_id));
+            if (exportFeatures.length === 0) return;
+
+            const kmlString = geojsonToKml({ type: 'FeatureCollection', features: exportFeatures });
+            
+            const blob = new Blob([kmlString], { type: 'application/vnd.google-earth.kml+xml' });
+            const downloadUrl = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = downloadUrl;
+            a.download = 'Met_Office_Warnings_Selected.kml';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(downloadUrl);
+        });
+
         function geojsonToKml(geojson) {
             let kml = '<?xml version="1.0" encoding="UTF-8"?>\n<kml xmlns="http://www.opengis.net/kml/2.2">\n<Document>\n';
             kml += '  <name>Met Office Severe Weather Warnings</name>\n';
 
             geojson.features.forEach(feature => {
                 if (!feature.geometry) return;
-
                 kml += '  <Placemark>\n';
 
-                // Extract a title from properties (Trying common field names)
-                const name = feature.properties.warning_type || feature.properties.headline || 'Weather Warning';
+                const name = `${feature.properties.weathertype || 'Weather Warning'} (${feature.properties.warninglevel || ''})`;
                 kml += `    <name>${name}</name>\n`;
 
-                // Build an HTML table description from all properties
-                let desc = '<table border="1" style="border-collapse:collapse; width: 100%;" cellpadding="5">';
-                for (const [key, value] of Object.entries(feature.properties)) {
-                    if (value !== null && value !== '') {
-                        desc += `<tr><td style="background-color: #f0f0f0;"><strong>${key}</strong></td><td>${value}</td></tr>`;
-                    }
-                }
-                desc += '</table>';
+                let desc = '<h2>' + name + '</h2>';
+                desc += `<p><strong>Headline:</strong> ${feature.properties.warningheadline || ''}</p>`;
+                desc += `<p><strong>Validity:</strong> ${feature.properties.validFromDateString || ''} to ${feature.properties.validToDateString || ''}</p>`;
+                desc += `<h3>What to Expect</h3><p>${(feature.properties.whatToExpect || '').replace(/\n/g, '<br>')}</p>`;
+                desc += `<h3>Further Details</h3><p>${(feature.properties.warningFurtherDetails || '').replace(/\n/g, '<br>')}</p>`;
+                desc += `<h3>Affected Areas</h3><p>${(feature.properties.affectedAreas || '').replace(/\n/g, '<br>')}</p>`;
+                
                 kml += `    <description><![CDATA[${desc}]]></description>\n`;
 
-                // Handle Geometries (Polygons and MultiPolygons are typical for weather warnings)
                 if (feature.geometry.type === 'Polygon') {
                     kml += '    <Polygon><outerBoundaryIs><LinearRing><coordinates>\n';
-                    // KML expects coordinates as lon,lat lon,lat space separated
                     kml += feature.geometry.coordinates[0].map(coord => `${coord[0]},${coord[1]}`).join(' ');
                     kml += '\n    </coordinates></LinearRing></outerBoundaryIs></Polygon>\n';
                 } 
@@ -95,9 +517,6 @@
                         kml += '\n      </coordinates></LinearRing></outerBoundaryIs></Polygon>\n';
                     });
                     kml += '    </MultiGeometry>\n';
-                } 
-                else if (feature.geometry.type === 'Point') {
-                    kml += `    <Point><coordinates>${feature.geometry.coordinates[0]},${feature.geometry.coordinates[1]}</coordinates></Point>\n`;
                 }
 
                 kml += '  </Placemark>\n';
@@ -106,61 +525,6 @@
             kml += '</Document>\n</kml>';
             return kml;
         }
-
-        /**
-         * Fetches data and triggers download
-         */
-        document.getElementById('downloadBtn').addEventListener('click', async () => {
-            const btn = document.getElementById('downloadBtn');
-            const status = document.getElementById('status');
-            
-            btn.disabled = true;
-            status.innerText = 'Fetching data from ArcGIS...';
-
-            try {
-                // ArcGIS Query URL:
-                // where=1=1 gets all records
-                // outSR=4326 ensures output is in WGS84 Latitude/Longitude (required by KML)
-                // f=geojson sets the output format to GeoJSON
-                const url = 'https://services.arcgis.com/Lq3V5RFuTBC9I7kv/arcgis/rest/services/Met_Office_National_Severe_Weather_Warning_Service_Live/FeatureServer/0/query?where=1%3D1&outFields=*&outSR=4326&f=geojson';
-                
-                const response = await fetch(url);
-                if (!response.ok) throw new Error('Network response was not ok');
-
-                const geojson = await response.json();
-
-                if (!geojson.features || geojson.features.length === 0) {
-                    status.innerText = 'No active warnings found.';
-                    btn.disabled = false;
-                    return;
-                }
-
-                status.innerText = 'Converting data to KML...';
-                const kmlString = geojsonToKml(geojson);
-
-                // Create a Blob containing the KML string
-                const blob = new Blob([kmlString], { type: 'application/vnd.google-earth.kml+xml' });
-                const downloadUrl = URL.createObjectURL(blob);
-                
-                // Create a temporary link element to trigger the download
-                const a = document.createElement('a');
-                a.href = downloadUrl;
-                a.download = 'Met_Office_Warnings.kml';
-                document.body.appendChild(a);
-                a.click();
-                
-                // Cleanup
-                document.body.removeChild(a);
-                URL.revokeObjectURL(downloadUrl);
-
-                status.innerText = `Success! Exported ${geojson.features.length} warnings.`;
-            } catch (error) {
-                console.error('Error fetching or converting data:', error);
-                status.innerText = 'Error exporting data. See browser console for details.';
-            } finally {
-                btn.disabled = false;
-            }
-        });
     </script>
 </body>
 </html>
