@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+<Document>
+  <name>Met Office Severe Weather Warnings</name>
+  <Placemark>
+    <name>Weather Warning</name>
+    <description><![CDATA[<table border="1" style="border-collapse:collapse; width: 100%;" cellpadding="5"><tr><td style="background-color: #f0f0f0;"><strong>OBJECTID</strong></td><td>4027</td></tr><tr><td style="background-color: #f0f0f0;"><strong>weathertype</strong></td><td>EXTREME HEAT</td></tr><tr><td style="background-color: #f0f0f0;"><strong>warninglevel</strong></td><td>AMBER</td></tr><tr><td style="background-color: #f0f0f0;"><strong>warningheadline</strong></td><td>Hot and humid weather is expected to continue through the middle of the week, with exceptionally warm temperatures both day and night.</td></tr><tr><td style="background-color: #f0f0f0;"><strong>validfromdate</strong></td><td>1782255600000</td></tr><tr><td style="background-color: #f0f0f0;"><strong>validtodate</strong></td><td>1782428399000</td></tr><tr><td style="background-color: #f0f0f0;"><strong>GlobalID</strong></td><td>99e23a33-9baf-4a7c-9c51-74c9a5566290</td></tr><tr><td style="background-color: #f0f0f0;"><strong>warningImpact</strong></td><td>4/High</td></tr><tr><td style="background-color: #f0f0f0;"><strong>warningLikelihood</strong></td><td>3/Likely</td></tr><tr><td style="background-color: #f0f0f0;"><strong>warningVersion</strong></td><td>1.0</td></tr><tr><td style="background-color: #f0f0f0;"><strong>affectedAreas</strong></td><td>East Midlands (Derby, Derbyshire, Leicester, Leicestershire, Lincolnshire, Northamptonshire, Nottingham, Nottinghamshire, Rutland);
+
+East of England (Bedford, Cambridgeshire, Central Bedfordshire, Essex, Hertfordshire, Luton, Norfolk, Peterborough, Southend-on-Sea, Suffolk, Thurrock);
+
+London & South East England (Bracknell Forest, Brighton and Hove, Buckinghamshire, East Sussex, Greater London, Hampshire, Kent, Medway, Milton Keynes, Oxfordshire, Reading, Slough, Southampton, Surrey, West Berkshire, West Sussex, Windsor and Maidenhead, Wokingham);
+
+North West England (Cheshire East, Cheshire West and Chester, Greater Manchester, Halton, Lancashire, Merseyside, Warrington);
+
+South West England (Bath and North East Somerset, Bristol, Devon, Dorset, Gloucestershire, North Somerset, Plymouth, Somerset, South Gloucestershire, Swindon, Torbay, Wiltshire);
+
+Wales (Blaenau Gwent, Bridgend, Caerphilly, Cardiff, Carmarthenshire, Ceredigion, Conwy, Denbighshire, Flintshire, Gwynedd, Isle of Anglesey, Merthyr Tydfil, Monmouthshire, Neath Port Talbot, Newport, Powys, Rhondda Cynon Taf, Swansea, Torfaen, Vale of Glamorgan, Wrexham);
+
+West Midlands (Herefordshire, Shropshire, Staffordshire, Stoke-on-Trent, Telford and Wrekin, Warwickshire, West Midlands Conurbation, Worcestershire);
+
+Yorkshire & Humber (East Riding of Yorkshire, North Lincolnshire, North Yorkshire, South Yorkshire)</td></tr><tr><td style="background-color: #f0f0f0;"><strong>whatToExpect</strong></td><td>Population-wide adverse health effects are likely to be experienced, not limited to those most vulnerable to extreme heat, leading to potential serious illness or danger to life.
+
+Substantial changes in working practices and daily routines likely to be required.
+
+Failure of heat-sensitive systems and equipment is likely, with the probable loss of power and other essential services, such as water, electricity, gas or mobile phone services.
+
+Significantly more people are likely to visit coastal areas, lakes and rivers leading to increased risk of water safety incidents.
+
+Delays on roads and road closures are possible, along with delays and cancellations to rail and air travel, with potential for significant welfare issues for those who experience even moderate delays</td></tr><tr><td style="background-color: #f0f0f0;"><strong>warningFurtherDetails</strong></td><td>Very hot weather is likely to continue in general until at least Thursday across the highlighted region, although significant variations from place to place and day by day are likely. Temperatures by day are widely expected to exceed 30 Celsius, with the hottest areas potentially peaking around 38 Celsius. 
+
+Overnight, temperatures are unlikely to fall much lower than high teens Celsius, and some places will not fall below 20 or 21 Celsius. These high temperatures will also be accompanied by high humidity.
+
+Cooler conditions may begin to become established from the west following this period, but confidence is low.
+
+What Should I Do?
+
+Keep yourself safe by following these simple steps to reduce the likelihood of the heat making you feel unwell; drink plenty of fluids, keep out of the sun and avoid any exercise between 11am-3pm when the sun is strongest and close curtains in rooms that face the sun. If you are going out take water with you, stay in the shade, wear sunscreen and a wide brimmed hat.
+
+Give yourself the best chance of avoiding delays by checking road conditions if driving, or bus and train timetables, amending your travel plans if necessary. If using public transport, there are many simple things you can do to keep yourself safe; carry water with you, take a small hand-held battery powered fan, if you feel unwell get off at next stop for some fresh air, dress in light fabrics in light colours to help stay cooler, keep an eye on fellow passengers for signs they may be struggling. 
+
+Help to protect vulnerable people that you know including older people, those with underlying conditions and those who live alone; they may need support to keep cool and stay hydrated. If you are worried about your health, or that of somebody you know, ring NHS 111 (or consult NI:DIRECT if in Northern Ireland). 
+
+Keep yourself safe whilst enjoying the water in this weather by following these simple steps: enter the water gradually, avoiding jumping or diving straight in, to reduce your risk of cold-water shock, go to a lifeguarded beach or a supervised swimming area, and, if you, or anyone else, get into difficulty in the water, float on your back.
+
+People cope better with power cuts when they have prepared for them in advance. It’s easy to do; consider gathering torches and batteries, a mobile phone power pack and other essential items.
+
+Stay up to date with the weather forecast for your area and follow any advice from emergency services and local authorities.</td></tr><tr><td style="background-color: #f0f0f0;"><strong>issuedDate</strong></td><td>1782035941000</td></tr><tr><td style="background-color: #f0f0f0;"><strong>issuedDateString</strong></td><td>21-06-2026 10:59:01 AM BST</td></tr><tr><td style="background-color: #f0f0f0;"><strong>validFromDateString</strong></td><td>24-06-2026 12:00:00 AM BST</td></tr><tr><td style="background-color: #f0f0f0;"><strong>validToDateString</strong></td><td>25-06-2026 11:59:59 PM BST</td></tr><tr><td style="background-color: #f0f0f0;"><strong>modifiedDateString</strong></td><td>21-06-2026 10:59:01 AM BST</td></tr></table>]]></description>
+    <Polygon><outerBoundaryIs><LinearRing><coordinates>
+-2.3126,53.6023 -2.1753,53.6707 -1.9775,53.3964 -1.9336,53.2323 -1.7798,53.1336 -1.5216,53.1336 -1.203,53.2882 -1.1069,53.8185 -0.8707,53.7909 -0.6262,53.6528 -0.434,53.4766 -0.3598,53.2636 -0.2994,52.9701 0.1099,52.7496 0.3186,52.7695 0.6812,52.7762 0.824,52.8293 1.3184,52.7695 1.3403,52.456 1.4063,52.2816 1.2854,52.2345 1.2964,52.093 1.1755,51.9916 1.1316,51.9104 0.9668,51.795 0.9888,51.6657 1.0657,51.5293 1.2964,51.3512 1.2964,51.2275 1.1316,51.0828 0.9009,50.9653 0.6262,50.8892 0.2966,50.8406 -0.9668,50.903 -1.3403,50.9446 -2.395,50.7504 -2.7356,50.7504 -3.3398,50.6111 -3.6694,50.2472 -4.0079,50.3064 -4.1583,50.3441 -4.1693,50.3625 -4.1844,50.3652 -4.1906,50.377 -4.2064,50.3989 -4.1968,50.4343 -4.1741,50.496 -4.183,50.5396 -4.3066,50.6599 -4.4385,50.9999 -4.1748,51.2688 -2.8784,51.255 -2.7795,51.3649 -2.7576,51.4882 -2.7356,51.5156 -2.8235,51.6317 -3.0981,51.5156 -3.5376,51.5019 -3.6694,51.5566 -3.8562,51.6112 -3.9111,51.6385 -4.1089,51.9984 -4.1089,52.3152 -4.0649,52.5897 -4.2188,52.7828 -4.4275,52.8227 -4.5483,52.9619 -4.5593,53.0676 -4.5044,53.1599 -4.3945,53.2586 -4.1309,53.3571 -3.6694,53.3571 -3.4167,53.3964 -3.252,53.4488 -3.186,53.4553 -3.1064,53.6039 -3.002,53.6804 -2.7905,53.6658 -2.612,53.5811 -2.4582,53.6153 -2.3126,53.6023
+    </coordinates></LinearRing></outerBoundaryIs></Polygon>
+  </Placemark>
+  <Placemark>
+    <name>Weather Warning</name>
+    <description><![CDATA[<table border="1" style="border-collapse:collapse; width: 100%;" cellpadding="5"><tr><td style="background-color: #f0f0f0;"><strong>OBJECTID</strong></td><td>4028</td></tr><tr><td style="background-color: #f0f0f0;"><strong>weathertype</strong></td><td>EXTREME HEAT</td></tr><tr><td style="background-color: #f0f0f0;"><strong>warninglevel</strong></td><td>AMBER</td></tr><tr><td style="background-color: #f0f0f0;"><strong>warningheadline</strong></td><td>A developing hot spell through Monday and Tuesday will likely lead to widespread impacts on people and infrastructure.</td></tr><tr><td style="background-color: #f0f0f0;"><strong>validfromdate</strong></td><td>1782086400000</td></tr><tr><td style="background-color: #f0f0f0;"><strong>validtodate</strong></td><td>1782255599000</td></tr><tr><td style="background-color: #f0f0f0;"><strong>GlobalID</strong></td><td>5f0ecc04-3cff-495f-be7c-2e8ebba64990</td></tr><tr><td style="background-color: #f0f0f0;"><strong>warningImpact</strong></td><td>3/Medium</td></tr><tr><td style="background-color: #f0f0f0;"><strong>warningLikelihood</strong></td><td>3/Likely</td></tr><tr><td style="background-color: #f0f0f0;"><strong>warningVersion</strong></td><td>2.0</td></tr><tr><td style="background-color: #f0f0f0;"><strong>affectedAreas</strong></td><td>East Midlands (Derby, Derbyshire, Leicester, Leicestershire, Lincolnshire, Northamptonshire, Nottingham, Nottinghamshire, Rutland);
+
+East of England (Bedford, Cambridgeshire, Central Bedfordshire, Essex, Hertfordshire, Luton, Norfolk, Peterborough, Southend-on-Sea, Suffolk, Thurrock);
+
+London & South East England (Bracknell Forest, Brighton and Hove, Buckinghamshire, East Sussex, Greater London, Hampshire, Isle of Wight, Kent, Medway, Milton Keynes, Oxfordshire, Portsmouth, Reading, Slough, Southampton, Surrey, West Berkshire, West Sussex, Windsor and Maidenhead, Wokingham);
+
+South West England (Bath and North East Somerset, Bournemouth Christchurch and Poole, Bristol, Devon, Dorset, Gloucestershire, North Somerset, Somerset, South Gloucestershire, Swindon, Wiltshire);
+
+Wales (Blaenau Gwent, Bridgend, Caerphilly, Cardiff, Merthyr Tydfil, Monmouthshire, Neath Port Talbot, Newport, Powys, Rhondda Cynon Taf, Torfaen, Vale of Glamorgan);
+
+West Midlands (Herefordshire, Shropshire, Staffordshire, Stoke-on-Trent, Telford and Wrekin, Warwickshire, West Midlands Conurbation, Worcestershire)</td></tr><tr><td style="background-color: #f0f0f0;"><strong>whatToExpect</strong></td><td>More people are likely to visit coastal areas, lakes and rivers leading to an increased risk of water safety incidents.
+
+Adverse health effects are likely to be experienced by those vulnerable to extreme heat.
+
+The wider population are likely to experience some adverse health effects including sunburn or heat exhaustion (dehydration, nausea, fatigue) and other heat related illnesses.
+
+Some delays to road, rail and air travel are possible, with potential for welfare issues for those who experience prolonged delays.
+
+Some changes in working practices and daily routines likely to be required.
+
+An increased chance that some heat-sensitive systems and equipment may fail, leading to power cuts and the loss of other services to some homes and businesses</td></tr><tr><td style="background-color: #f0f0f0;"><strong>warningFurtherDetails</strong></td><td>Following very warm weather on Sunday, very high temperatures, accompanied by high humidity, are expected on Monday and especially Tuesday and will likely bring widespread impacts to people and infrastructure. In addition to high daytime maxima, temperatures overnight will remain very warm, especially in larger urban areas.
+
+Temperatures are likely to reach the low to mid-30s Celsius in places on Monday and into the mid-30s Celsius more widely on Tuesday. Some places, particularly in urban areas, may see temperatures remain above 20 Celsius overnight.
+
+The very high temperatures are likely to continue across parts of central and southern Britain further on into next week, albeit with some uncertainty in the extent and magnitude of this heat. 
+
+What Should I Do?
+
+Keep yourself safe by following these simple steps to reduce the likelihood of the heat making you feel unwell; drink plenty of fluids, keep out of the sun and avoid any exercise between 11am-3pm when the sun is strongest and close curtains in rooms that face the sun. If you are going out take water with you, stay in the shade, wear sunscreen and a wide brimmed hat.
+
+Give yourself the best chance of avoiding delays by checking road conditions if driving, or bus and train timetables, amending your travel plans if necessary. If using public transport, there are many simple things you can do to keep yourself safe; carry water with you, take a small hand-held battery powered fan, if you feel unwell get off at next stop for some fresh air, dress in light fabrics in light colours to help stay cooler, keep an eye on fellow passengers for signs they may be struggling. 
+
+Help to protect vulnerable people that you know including older people, those with underlying conditions and those who live alone; they may need support to keep cool and stay hydrated. If you are worried about your health, or that of somebody you know, ring NHS 111.
+
+Keep yourself safe whilst enjoying the water in this weather by following these simple steps: enter the water gradually, avoiding jumping or diving straight in, to reduce your risk of cold-water shock, go to a lifeguarded beach or a supervised swimming area, and, if you, or anyone else, get into difficulty in the water, float on your back.
+
+People cope better with power cuts when they have prepared for them in advance. It’s easy to do; consider gathering torches and batteries, a mobile phone power pack and other essential items.
+
+Stay up to date with the weather forecast for your area and follow any advice from emergency services and local authorities</td></tr><tr><td style="background-color: #f0f0f0;"><strong>warningUpdateDescription</strong></td><td>Area expanded across east Wales and much of the Midlands. Some updates to the 'further details' too.</td></tr><tr><td style="background-color: #f0f0f0;"><strong>issuedDate</strong></td><td>1781861482000</td></tr><tr><td style="background-color: #f0f0f0;"><strong>issuedDateString</strong></td><td>19-06-2026 10:31:22 AM BST</td></tr><tr><td style="background-color: #f0f0f0;"><strong>validFromDateString</strong></td><td>22-06-2026 01:00:00 AM BST</td></tr><tr><td style="background-color: #f0f0f0;"><strong>validToDateString</strong></td><td>23-06-2026 11:59:59 PM BST</td></tr><tr><td style="background-color: #f0f0f0;"><strong>modifiedDateString</strong></td><td>20-06-2026 11:57:43 AM BST</td></tr></table>]]></description>
+    <Polygon><outerBoundaryIs><LinearRing><coordinates>
+2.0215,52.6431 1.9336,52.147 1.7358,51.618 1.5381,51.2344 0.9229,50.7365 0.3186,50.7017 -0.1978,50.7504 -1.2744,50.5693 -2.5488,50.5134 -3.0322,50.646 -3.3289,50.5693 -3.5815,50.632 -3.6694,50.8337 -3.9111,51.0414 -3.8123,51.2963 -3.7793,51.4035 -3.8274,51.5147 -3.8383,51.6257 -3.7958,51.727 -3.7408,51.795 -3.6035,51.9849 -3.6145,52.2042 -3.6255,52.4024 -3.7079,52.5997 -3.4882,52.7296 -3.3179,52.8094 -3.0446,52.884 -2.7081,52.8857 -2.428,52.9089 -2.3181,53.0346 -2.2522,53.08 -2.2055,53.0957 -2.1588,53.1072 -1.8622,52.9652 -1.6507,52.9635 -1.4694,53.0016 -1.3596,53.1484 -1.2881,53.1813 -1.1316,53.294 -1.078,53.3719 -0.9901,53.4136 -0.8611,53.4333 -0.7237,53.4488 -0.5754,53.4284 -0.4298,53.4578 -0.3227,53.5077 -0.2252,53.43 -0.1071,53.3915 -0.0343,53.4308 -0.0027,53.4782 0.1483,53.5272 0.3516,53.4095 0.434,53.2521 0.4999,53.0544 0.9174,53.0709 1.3843,53.0412 2.0215,52.6431
+    </coordinates></LinearRing></outerBoundaryIs></Polygon>
+  </Placemark>
+</Document>
+</kml>
