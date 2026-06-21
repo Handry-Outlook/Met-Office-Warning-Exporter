@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Export Met Office Warnings to KML</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            padding: 40px;
+            text-align: center;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        button {
+            padding: 12px 24px;
+            font-size: 16px;
+            cursor: pointer;
+            background: #0078D7;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+        button:hover {
+            background: #005a9e;
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        #status {
+            margin-top: 20px;
+            font-weight: 500;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Export Live Severe Weather Warnings</h2>
+        <p>Fetches the live Met Office data from the ArcGIS Feature Service and converts it to a downloadable KML file for use in Google Earth or QGIS.</p>
+        <button id="downloadBtn">Download KML</button>
+        <div id="status">Ready</div>
+    </div>
+
+    <script>
+        /**
+         * Converts GeoJSON to a KML string
+         */
+        function geojsonToKml(geojson) {
+            let kml = '<?xml version="1.0" encoding="UTF-8"?>\n<kml xmlns="http://www.opengis.net/kml/2.2">\n<Document>\n';
+            kml += '  <name>Met Office Severe Weather Warnings</name>\n';
+
+            geojson.features.forEach(feature => {
+                if (!feature.geometry) return;
+
+                kml += '  <Placemark>\n';
+
+                // Extract a title from properties (Trying common field names)
+                const name = feature.properties.warning_type || feature.properties.headline || 'Weather Warning';
+                kml += `    <name>${name}</name>\n`;
+
+                // Build an HTML table description from all properties
+                let desc = '<table border="1" style="border-collapse:collapse; width: 100%;" cellpadding="5">';
+                for (const [key, value] of Object.entries(feature.properties)) {
+                    if (value !== null && value !== '') {
+                        desc += `<tr><td style="background-color: #f0f0f0;"><strong>${key}</strong></td><td>${value}</td></tr>`;
+                    }
+                }
+                desc += '</table>';
+                kml += `    <description><![CDATA[${desc}]]></description>\n`;
+
+                // Handle Geometries (Polygons and MultiPolygons are typical for weather warnings)
+                if (feature.geometry.type === 'Polygon') {
+                    kml += '    <Polygon><outerBoundaryIs><LinearRing><coordinates>\n';
+                    // KML expects coordinates as lon,lat lon,lat space separated
+                    kml += feature.geometry.coordinates[0].map(coord => `${coord[0]},${coord[1]}`).join(' ');
+                    kml += '\n    </coordinates></LinearRing></outerBoundaryIs></Polygon>\n';
+                } 
+                else if (feature.geometry.type === 'MultiPolygon') {
+                    kml += '    <MultiGeometry>\n';
+                    feature.geometry.coordinates.forEach(poly => {
+                        kml += '      <Polygon><outerBoundaryIs><LinearRing><coordinates>\n';
+                        kml += poly[0].map(coord => `${coord[0]},${coord[1]}`).join(' ');
+                        kml += '\n      </coordinates></LinearRing></outerBoundaryIs></Polygon>\n';
+                    });
+                    kml += '    </MultiGeometry>\n';
+                } 
+                else if (feature.geometry.type === 'Point') {
+                    kml += `    <Point><coordinates>${feature.geometry.coordinates[0]},${feature.geometry.coordinates[1]}</coordinates></Point>\n`;
+                }
+
+                kml += '  </Placemark>\n';
+            });
+
+            kml += '</Document>\n</kml>';
+            return kml;
+        }
+
+        /**
+         * Fetches data and triggers download
+         */
+        document.getElementById('downloadBtn').addEventListener('click', async () => {
+            const btn = document.getElementById('downloadBtn');
+            const status = document.getElementById('status');
+            
+            btn.disabled = true;
+            status.innerText = 'Fetching data from ArcGIS...';
+
+            try {
+                // ArcGIS Query URL:
+                // where=1=1 gets all records
+                // outSR=4326 ensures output is in WGS84 Latitude/Longitude (required by KML)
+                // f=geojson sets the output format to GeoJSON
+                const url = 'https://services.arcgis.com/Lq3V5RFuTBC9I7kv/arcgis/rest/services/Met_Office_National_Severe_Weather_Warning_Service_Live/FeatureServer/0/query?where=1%3D1&outFields=*&outSR=4326&f=geojson';
+                
+                const response = await fetch(url);
+                if (!response.ok) throw new Error('Network response was not ok');
+
+                const geojson = await response.json();
+
+                if (!geojson.features || geojson.features.length === 0) {
+                    status.innerText = 'No active warnings found.';
+                    btn.disabled = false;
+                    return;
+                }
+
+                status.innerText = 'Converting data to KML...';
+                const kmlString = geojsonToKml(geojson);
+
+                // Create a Blob containing the KML string
+                const blob = new Blob([kmlString], { type: 'application/vnd.google-earth.kml+xml' });
+                const downloadUrl = URL.createObjectURL(blob);
+                
+                // Create a temporary link element to trigger the download
+                const a = document.createElement('a');
+                a.href = downloadUrl;
+                a.download = 'Met_Office_Warnings.kml';
+                document.body.appendChild(a);
+                a.click();
+                
+                // Cleanup
+                document.body.removeChild(a);
+                URL.revokeObjectURL(downloadUrl);
+
+                status.innerText = `Success! Exported ${geojson.features.length} warnings.`;
+            } catch (error) {
+                console.error('Error fetching or converting data:', error);
+                status.innerText = 'Error exporting data. See browser console for details.';
+            } finally {
+                btn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
